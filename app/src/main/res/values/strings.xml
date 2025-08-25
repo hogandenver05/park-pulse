@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Theme Parks</string>
+    <string name="goodbye_world">Goodbye World</string>
+    <string name="button_text">button</string>
 </resources>
