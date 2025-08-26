@@ -2,32 +2,28 @@ package com.denverhogan.themeparks
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.denverhogan.themeparks.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var textView: TextView
-    private lateinit var button: Button
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-
-        textView = findViewById(R.id.hello_world_text)
-        button = findViewById(R.id.button)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        button.setOnClickListener {
+        binding.button.setOnClickListener {
             onButtonClicked()
         }
     }
@@ -36,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "Button clicked!")
         Log.e(LOG_TAG, "Button clicked!")
 
-        textView.text = getString(R.string.goodbye_world)
+        binding.helloWorldText.text = getString(R.string.goodbye_world)
     }
 
     companion object {
