@@ -7,11 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.denverhogan.themeparks.databinding.FragmentThemeParksListBinding
+import com.denverhogan.themeparks.model.ThemePark
 
 class ThemeParksListFragment : Fragment() {
     private var _binding: FragmentThemeParksListBinding? = null
     private val binding get() = _binding!!
+
+    private val dataSet = (1..100).map {
+        ThemePark(
+            name = "Kings Island",
+            location = "Mason, OH"
+        )
+    }
+
+    private val adapter = ThemeParksAdapter(
+        dataSet = dataSet,
+        onItemClick = { onItemClick() }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,12 +38,11 @@ class ThemeParksListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.button.setOnClickListener {
-            onButtonClicked()
-        }
+        binding.parksListRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.parksListRecyclerView.adapter = adapter
     }
 
-    private fun onButtonClicked() {
+    private fun onItemClick() {
         Log.d(LOG_TAG, "Button clicked!")
         Log.e(LOG_TAG, "Button clicked!")
 
