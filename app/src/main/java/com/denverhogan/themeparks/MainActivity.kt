@@ -1,11 +1,11 @@
 package com.denverhogan.themeparks
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.commit
 import com.denverhogan.themeparks.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -23,19 +23,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.button.setOnClickListener {
-            onButtonClicked()
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add(binding.fragmentContainer.id, ThemeParksListFragment.newInstance())
         }
-    }
-
-    fun onButtonClicked() {
-        Log.d(LOG_TAG, "Button clicked!")
-        Log.e(LOG_TAG, "Button clicked!")
-
-        binding.helloWorldText.text = getString(R.string.goodbye_world)
-    }
-
-    companion object {
-        private const val LOG_TAG = "MainActivity"
     }
 }
