@@ -1,6 +1,6 @@
 package com.denverhogan.themeparks.model
 
-data class ThemePark(
+data class DestinationListItem(
     val name: String,
     val location: String
 )
