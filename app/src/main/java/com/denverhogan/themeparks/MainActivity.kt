@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.commit
 import com.denverhogan.themeparks.databinding.ActivityMainBinding
+import com.denverhogan.themeparks.list.DestinationsListFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager.commit {
             setReorderingAllowed(true)
-            add(binding.fragmentContainer.id, ThemeParksListFragment.newInstance())
+            add(binding.fragmentContainer.id, DestinationsListFragment.newInstance())
         }
     }
 }
