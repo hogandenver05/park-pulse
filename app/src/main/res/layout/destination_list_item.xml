@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/theme_park_list_item"
+    android:id="@+id/destination_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:padding="12dp">
 
     <TextView
-        android:id="@+id/theme_park_name"
+        android:id="@+id/destination_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
@@ -19,11 +19,11 @@
         tools:text="Kings Island" />
 
     <TextView
-        android:id="@+id/theme_park_location"
+        android:id="@+id/destination_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/theme_park_name"
+        app:layout_constraintTop_toBottomOf="@id/destination_name"
         tools:text="Mason, OH" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
