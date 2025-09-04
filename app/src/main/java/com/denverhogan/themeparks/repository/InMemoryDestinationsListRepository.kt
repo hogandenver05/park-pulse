@@ -3,8 +3,9 @@ package com.denverhogan.themeparks.repository
 import com.denverhogan.themeparks.model.DestinationListItem
 import com.denverhogan.themeparks.model.GetAllDestinationsResult
 import kotlinx.coroutines.delay
+import javax.inject.Inject
 
-class InMemoryDestinationsListRepository() : DestinationsListRepository {
+class InMemoryDestinationsListRepository @Inject constructor() : DestinationsListRepository {
     override suspend fun getAllDestinations(): GetAllDestinationsResult {
         delay(3000)
         return GetAllDestinationsResult.Success(
