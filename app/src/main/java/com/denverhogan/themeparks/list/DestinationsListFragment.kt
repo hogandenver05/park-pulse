@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.denverhogan.themeparks.R
@@ -18,20 +16,15 @@ import com.denverhogan.themeparks.databinding.FragmentDestinationsListBinding
 import com.denverhogan.themeparks.detail.DestinationDetailFragment
 import com.denverhogan.themeparks.model.DestinationListItem
 import com.denverhogan.themeparks.model.DestinationsListViewState
-import com.denverhogan.themeparks.repository.InMemoryDestinationsListRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class DestinationsListFragment : Fragment() {
     private var _binding: FragmentDestinationsListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModelFactory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            @Suppress("UNCHECKED_CAST") return DestinationsListViewModel(repository = InMemoryDestinationsListRepository()) as T
-        }
-    }
-
-    private val destinationsListViewModel: DestinationsListViewModel by viewModels { viewModelFactory }
+    private val destinationsListViewModel: DestinationsListViewModel by viewModels()
     private lateinit var destinationsListAdapter: DestinationsListAdapter
 
     override fun onCreateView(

@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.denverhogan.themeparks.databinding.FragmentDestinationDetailBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DestinationDetailFragment : Fragment() {
     private var _binding: FragmentDestinationDetailBinding? = null
     private val binding get() = _binding!!

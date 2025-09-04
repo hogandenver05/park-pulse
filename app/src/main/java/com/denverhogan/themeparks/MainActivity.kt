@@ -8,7 +8,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.commit
 import com.denverhogan.themeparks.databinding.ActivityMainBinding
 import com.denverhogan.themeparks.list.DestinationsListFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
