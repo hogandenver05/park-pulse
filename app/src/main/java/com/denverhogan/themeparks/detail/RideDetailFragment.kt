@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.denverhogan.themeparks.databinding.FragmentDestinationDetailBinding
+import com.denverhogan.themeparks.databinding.FragmentRideDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DestinationDetailFragment : Fragment() {
-    private var _binding: FragmentDestinationDetailBinding? = null
+class RideDetailFragment : Fragment() {
+    private var _binding: FragmentRideDetailBinding? = null
     private val binding get() = _binding!!
 
     private var id: Int? = null
@@ -30,13 +30,13 @@ class DestinationDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDestinationDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentRideDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.destinationName.text = name ?: "An error occurred"
+        binding.rideName.text = name ?: "An error occurred"
     }
 
     override fun onDestroyView() {
@@ -49,9 +49,9 @@ class DestinationDetailFragment : Fragment() {
         private const val ARG_NAME = "name"
 
         @JvmStatic
-        fun newInstance(id: Long, name: String) = DestinationDetailFragment().apply {
+        fun newInstance(id: Int, name: String) = RideDetailFragment().apply {
             arguments = Bundle().apply {
-                putLong(ARG_ID, id)
+                putInt(ARG_ID, id)
                 putString(ARG_NAME, name)
             }
         }
