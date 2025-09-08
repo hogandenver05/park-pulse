@@ -4,20 +4,21 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.denverhogan.themeparks.databinding.DestinationListItemBinding
-import com.denverhogan.themeparks.model.DestinationListItem
+import com.denverhogan.themeparks.databinding.RideListItemBinding
+import com.denverhogan.themeparks.model.Ride
 
-class DestinationsListAdapter(private val onItemClick : (DestinationListItem) -> Unit) :
-    RecyclerView.Adapter<DestinationsListAdapter.ViewHolder>() {
+class RidesListAdapter(private val onItemClick : (Ride) -> Unit) :
+    RecyclerView.Adapter<RidesListAdapter.ViewHolder>() {
 
-    private val dataSet: MutableList<DestinationListItem> = mutableListOf()
+    private val dataSet: MutableList<Ride> = mutableListOf()
 
     inner class ViewHolder(
-        private val binding: DestinationListItemBinding
+        private val binding: RideListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(destination: DestinationListItem) {
-            binding.destinationName.text = destination.name
-            binding.destinationLocation.text = destination.location
+        fun bind(ride: Ride) {
+            binding.rideName.text = ride.name
+            if (ride.isOpen) binding.rideWaitTime.text = ride.waitTime.toString()
+            else binding.rideWaitTime.text = "Closed"
         }
     }
 
@@ -26,12 +27,12 @@ class DestinationsListAdapter(private val onItemClick : (DestinationListItem) ->
         viewType: Int
     ): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = DestinationListItemBinding.inflate(inflater, parent, false)
+        val binding = RideListItemBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(destination = dataSet[position])
+        holder.bind(ride = dataSet[position])
         holder.itemView.setOnClickListener {
             onItemClick(dataSet[position])
         }
@@ -40,7 +41,7 @@ class DestinationsListAdapter(private val onItemClick : (DestinationListItem) ->
     override fun getItemCount() = dataSet.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(data: List<DestinationListItem>) {
+    fun updateData(data: List<Ride>) {
         dataSet.clear()
         dataSet.addAll(data)
         notifyDataSetChanged()
