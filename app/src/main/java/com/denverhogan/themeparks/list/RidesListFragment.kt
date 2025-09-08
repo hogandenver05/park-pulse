@@ -12,33 +12,33 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.denverhogan.themeparks.R
-import com.denverhogan.themeparks.databinding.FragmentDestinationsListBinding
-import com.denverhogan.themeparks.detail.DestinationDetailFragment
-import com.denverhogan.themeparks.model.DestinationListItem
-import com.denverhogan.themeparks.model.DestinationsListViewState
+import com.denverhogan.themeparks.databinding.FragmentRidesListBinding
+import com.denverhogan.themeparks.detail.RideDetailFragment
+import com.denverhogan.themeparks.model.RidesListViewState
+import com.denverhogan.themeparks.model.Ride
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DestinationsListFragment : Fragment() {
-    private var _binding: FragmentDestinationsListBinding? = null
+class RidesListFragment : Fragment() {
+    private var _binding: FragmentRidesListBinding? = null
     private val binding get() = _binding!!
 
-    private val destinationsListViewModel: DestinationsListViewModel by viewModels()
-    private lateinit var destinationsListAdapter: DestinationsListAdapter
+    private val destinationsListViewModel: RidesListViewModel by viewModels()
+    private lateinit var ridesListAdapter: RidesListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDestinationsListBinding.inflate(inflater, container, false)
+        _binding = FragmentRidesListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        destinationsListAdapter = DestinationsListAdapter(onItemClick = ::onItemClick)
-        binding.destinationsListRecyclerView.adapter = destinationsListAdapter
+        ridesListAdapter = RidesListAdapter(onItemClick = ::onItemClick)
+        binding.ridesListRecyclerView.adapter = ridesListAdapter
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -50,16 +50,22 @@ class DestinationsListFragment : Fragment() {
     private suspend fun collectViewState() {
         destinationsListViewModel.viewState.collect { viewState ->
             when (viewState) {
-                is DestinationsListViewState.Error -> TODO()
-                DestinationsListViewState.Loading -> {
+                is RidesListViewState.Loading -> {
                     binding.progressBar.isVisible = true
-                    binding.destinationsListRecyclerView.isVisible = false
+                    binding.ridesListRecyclerView.isVisible = false
+                    binding.errorMessage.isVisible = false
                 }
-
-                is DestinationsListViewState.Success -> {
-                    destinationsListAdapter.updateData(viewState.destinations)
+                is RidesListViewState.Error -> {
+                    binding.errorMessage.text = viewState.errorMessage
                     binding.progressBar.isVisible = false
-                    binding.destinationsListRecyclerView.isVisible = true
+                    binding.ridesListRecyclerView.isVisible = false
+                    binding.errorMessage.isVisible = true
+                }
+                is RidesListViewState.Success -> {
+                    ridesListAdapter.updateData(viewState.rides)
+                    binding.progressBar.isVisible = false
+                    binding.ridesListRecyclerView.isVisible = true
+                    binding.errorMessage.isVisible = false
                 }
             }
         }
@@ -70,12 +76,13 @@ class DestinationsListFragment : Fragment() {
         _binding = null
     }
 
-    fun onItemClick(item: DestinationListItem) {
+    fun onItemClick(item: Ride) {
         parentFragmentManager.commit {
             setReorderingAllowed(true)
             replace(
-                R.id.fragment_container,
-                DestinationDetailFragment.newInstance(id = 0, name = item.name) //TODO: fix ID logic
+                R.id.fragment_container, RideDetailFragment.newInstance(
+                    id = item.id, name = item.name
+                )
             )
             addToBackStack(null)
         }
@@ -83,6 +90,6 @@ class DestinationsListFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = DestinationsListFragment()
+        fun newInstance() = RidesListFragment()
     }
 }
