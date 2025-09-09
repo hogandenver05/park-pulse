@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.denverhogan.themeparks.R
 import com.denverhogan.themeparks.databinding.FragmentRidesListBinding
 import com.denverhogan.themeparks.detail.RideDetailFragment
@@ -39,6 +40,8 @@ class RidesListFragment : Fragment() {
 
         ridesListAdapter = RidesListAdapter(onItemClick = ::onItemClick)
         binding.ridesListRecyclerView.adapter = ridesListAdapter
+        binding.ridesListRecyclerView.addItemDecoration(DividerItemDecoration(context,
+            DividerItemDecoration.VERTICAL))
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
