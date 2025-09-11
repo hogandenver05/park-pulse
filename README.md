@@ -40,5 +40,5 @@
 ### Clone the repository
 
 ```bash
-git clone https://github.com/denverhogan/park-pulse.git
+git clone https://github.com/hogandenver05/park-pulse.git
 cd theme-parks
