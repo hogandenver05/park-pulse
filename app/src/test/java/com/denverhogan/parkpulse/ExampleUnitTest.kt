@@ -1,4 +1,4 @@
-package com.denverhogan.themeparks
+package com.denverhogan.parkpulse
 
 import org.junit.Test
 
