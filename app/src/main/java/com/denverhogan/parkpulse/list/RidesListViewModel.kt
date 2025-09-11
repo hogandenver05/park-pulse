@@ -1,4 +1,4 @@
-package com.denverhogan.themeparks.list
+package com.denverhogan.parkpulse.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,8 +24,8 @@ class RidesListViewModel @Inject constructor(
             _viewState.update {
                 val result = repository.getAllRides()
                 when (result) {
-                    is GetAllRidesResult.Error -> RidesListViewState.Error(errorMessage = result.message)
                     is GetAllRidesResult.Success -> RidesListViewState.Success(rides = result.rides)
+                    is GetAllRidesResult.Error -> RidesListViewState.Error(errorMessage = result.message)
                 }
             }
         }

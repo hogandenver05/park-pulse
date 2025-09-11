@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Theme Parks"
+rootProject.name = "ParkPulse"
 include(":app")
  
