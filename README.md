@@ -1,6 +1,6 @@
-# 🎢 Theme Parks
+# 🎢 Park Pulse
 
-**Theme Parks** is a modern Android application built in Kotlin that displays a list of amusement park rides and their current wait times. It utilizes clean architecture, Hilt for dependency injection, Retrofit for networking, and follows best practices like ViewModel and state-driven UI updates with Jetpack components.
+**Park Pulse** is a modern Android application built in Kotlin that displays a list of amusement park rides and their current wait times. It utilizes clean architecture, Hilt for dependency injection, Retrofit for networking, and follows best practices like ViewModel and state-driven UI updates with Jetpack components.
 
 ---
 
@@ -40,5 +40,5 @@
 ### Clone the repository
 
 ```bash
-git clone https://github.com/denverhogan/theme-parks.git
+git clone https://github.com/denverhogan/park-pulse.git
 cd theme-parks
