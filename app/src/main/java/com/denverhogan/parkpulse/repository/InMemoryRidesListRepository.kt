@@ -12,7 +12,8 @@ class InMemoryRidesListRepository @Inject constructor(private val api: ThemePark
             val coasters = lands[0].rides
             val family = lands[1].rides
             val kids = lands[2].rides
-            val thrill = lands[3].rides
+            val other = lands[3].rides
+            val thrill = lands[4].rides
             return if (response.isSuccessful && response.body() != null) {
                 GetAllRidesResult.Success(rides = coasters + thrill + family)
             } else {
