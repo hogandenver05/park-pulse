@@ -2,9 +2,9 @@ package com.denverhogan.parkpulse.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.denverhogan.themeparks.model.RidesListViewState
-import com.denverhogan.themeparks.network.GetAllRidesResult
-import com.denverhogan.themeparks.repository.RidesListRepository
+import com.denverhogan.parkpulse.model.RidesListViewState
+import com.denverhogan.parkpulse.network.GetAllRidesResult
+import com.denverhogan.parkpulse.repository.RidesListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

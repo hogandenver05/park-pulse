@@ -1,6 +1,6 @@
-package com.denverhogan.themeparks.repository
+package com.denverhogan.parkpulse.repository
 
-import com.denverhogan.themeparks.network.GetAllRidesResult
+import com.denverhogan.parkpulse.network.GetAllRidesResult
 
 interface RidesListRepository {
     suspend fun getAllRides(): GetAllRidesResult

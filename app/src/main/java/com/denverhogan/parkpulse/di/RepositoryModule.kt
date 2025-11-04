@@ -1,7 +1,7 @@
-package com.denverhogan.themeparks.di
+package com.denverhogan.parkpulse.di
 
-import com.denverhogan.themeparks.repository.RidesListRepository
-import com.denverhogan.themeparks.repository.InMemoryRidesListRepository
+import com.denverhogan.parkpulse.repository.RidesListRepository
+import com.denverhogan.parkpulse.repository.InMemoryRidesListRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

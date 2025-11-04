@@ -1,6 +1,6 @@
-package com.denverhogan.themeparks.network
+package com.denverhogan.parkpulse.network
 
-import com.denverhogan.themeparks.model.Ride
+import com.denverhogan.parkpulse.model.Ride
 
 sealed interface GetAllRidesResult {
     data class Success(val rides: List<Ride>) : GetAllRidesResult

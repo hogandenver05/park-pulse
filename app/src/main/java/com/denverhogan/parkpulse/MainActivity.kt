@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             })
                         ) { backStackEntry ->
                             val rideName = backStackEntry.arguments?.getString("rideName") ?: ""
-                            RideDetailScreen(rideName, navController = navController,)
+                            RideDetailScreen(rideName, navController = navController)
                         }
                     }
                 }

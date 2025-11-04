@@ -1,4 +1,4 @@
-package com.denverhogan.themeparks.model
+package com.denverhogan.parkpulse.model
 
 data class LandsResponse(
     val lands: List<Category>,
