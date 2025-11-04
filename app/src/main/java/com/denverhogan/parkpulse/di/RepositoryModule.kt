@@ -1,7 +1,7 @@
 package com.denverhogan.parkpulse.di
 
-import com.denverhogan.parkpulse.repository.RidesListRepository
-import com.denverhogan.parkpulse.repository.InMemoryRidesListRepository
+import com.denverhogan.parkpulse.repository.Repository
+import com.denverhogan.parkpulse.repository.InMemoryRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 @Suppress("unused")
 interface RepositoryModule {
     @Binds
-    fun bindRidesListRepository(
-        inMemoryRidesListRepository: InMemoryRidesListRepository
-    ): RidesListRepository
+    fun bindRepository(
+        inMemoryRepository: InMemoryRepository
+    ): Repository
 }
