@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.denverhogan.parkpulse.ui.theme.ParkPulseTheme
-import com.denverhogan.themeparks.model.Ride
-import com.denverhogan.themeparks.model.RidesListViewState
+import com.denverhogan.parkpulse.model.Ride
+import com.denverhogan.parkpulse.model.RidesListViewState
 
 @Composable
 fun RidesListScreen(
@@ -103,6 +103,6 @@ fun RidesListItem(ride: Ride, onClick: () -> Unit) {
 @Composable
 fun RidesListScreenPreview() {
     ParkPulseTheme {
-        RidesListScreen(onRideClick = {})
+        RidesListScreen(onRideClick = { })
     }
 }

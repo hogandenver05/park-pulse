@@ -1,6 +1,6 @@
-package com.denverhogan.themeparks.di
+package com.denverhogan.parkpulse.di
 
-import com.denverhogan.themeparks.network.ThemeParksApi
+import com.denverhogan.parkpulse.network.QueueTimesApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +23,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideApi(retrofit: Retrofit): ThemeParksApi {
-        return retrofit.create<ThemeParksApi>()
+    fun provideApi(retrofit: Retrofit): QueueTimesApi {
+        return retrofit.create<QueueTimesApi>()
     }
 }

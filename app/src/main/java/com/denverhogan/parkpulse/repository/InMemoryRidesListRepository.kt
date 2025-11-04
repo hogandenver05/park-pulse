@@ -1,10 +1,11 @@
-package com.denverhogan.themeparks.repository
+package com.denverhogan.parkpulse.repository
 
-import com.denverhogan.themeparks.network.GetAllRidesResult
-import com.denverhogan.themeparks.network.ThemeParksApi
+import com.denverhogan.parkpulse.network.GetAllRidesResult
+import com.denverhogan.parkpulse.network.QueueTimesApi
 import javax.inject.Inject
 
-class InMemoryRidesListRepository @Inject constructor(private val api: ThemeParksApi) : RidesListRepository {
+class InMemoryRidesListRepository @Inject constructor(private val api: QueueTimesApi) :
+    RidesListRepository {
     override suspend fun getAllRides(): GetAllRidesResult {
         try {
             val response = api.getAllRides()

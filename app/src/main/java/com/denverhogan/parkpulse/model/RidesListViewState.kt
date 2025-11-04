@@ -1,4 +1,4 @@
-package com.denverhogan.themeparks.model
+package com.denverhogan.parkpulse.model
 
 sealed interface RidesListViewState {
     data object Loading : RidesListViewState

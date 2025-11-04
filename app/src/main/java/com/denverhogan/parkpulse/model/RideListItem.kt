@@ -1,4 +1,4 @@
-package com.denverhogan.themeparks.model
+package com.denverhogan.parkpulse.model
 
 data class RideListItem(
     val id: Int,
