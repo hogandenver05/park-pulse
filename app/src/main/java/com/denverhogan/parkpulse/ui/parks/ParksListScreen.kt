@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -55,10 +56,13 @@ fun ParksListScreen(
             Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                     text = "Park Pulse",
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(16.dp)
                 )
-                SortButtons(onSort = { viewModel.sortParks(it) })
+                SortButtons(
+                    selectedOption = state.sortOption,
+                    onSort = { viewModel.sortParks(it) }
+                )
                 ParksList(
                     parks = state.parks,
                     onFavorite = { viewModel.toggleFavorite(it) },
@@ -82,7 +86,10 @@ fun ParksListScreen(
 }
 
 @Composable
-fun SortButtons(onSort: (ParkSortOption) -> Unit) {
+fun SortButtons(
+    selectedOption: ParkSortOption,
+    onSort: (ParkSortOption) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,15 +98,27 @@ fun SortButtons(onSort: (ParkSortOption) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text("Sort By:")
-        Button(onClick = { onSort(ParkSortOption.FAVORITES) }) {
-            Text("Favorites")
+
+        @Composable
+        fun SortButton(option: ParkSortOption, text: String) {
+            Button(
+                onClick = { onSort(option) },
+                colors = if (selectedOption == option) {
+                    ButtonDefaults.buttonColors()
+                } else {
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            ) {
+                Text(text)
+            }
         }
-        Button(onClick = { onSort(ParkSortOption.DISTANCE) }) {
-            Text("Distance")
-        }
-        Button(onClick = { onSort(ParkSortOption.ALPHABETICAL) }) {
-            Text("A-Z")
-        }
+
+        SortButton(ParkSortOption.FAVORITES, "Favorites")
+        SortButton(ParkSortOption.DISTANCE, "Distance")
+        SortButton(ParkSortOption.ALPHABETICAL, "A-Z")
     }
 }
 

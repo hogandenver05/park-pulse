@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -62,7 +63,10 @@ fun RidesListScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(16.dp)
                 )
-                SortButtons(onSort = { viewModel.sortRides(it) })
+                SortButtons(
+                    selectedOption = state.sortOption,
+                    onSort = { viewModel.sortRides(it) }
+                )
                 RidesList(
                     rides = state.rides,
                     parkId = viewModel.parkId,
@@ -84,7 +88,10 @@ fun RidesListScreen(
 }
 
 @Composable
-fun SortButtons(onSort: (RideSortOption) -> Unit) {
+fun SortButtons(
+    selectedOption: RideSortOption,
+    onSort: (RideSortOption) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -93,15 +100,27 @@ fun SortButtons(onSort: (RideSortOption) -> Unit) {
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Text("Sort By:")
-        Button(onClick = { onSort(RideSortOption.LONG_WAIT) }) {
-            Text("Long Wait")
+
+        @Composable
+        fun SortButton(option: RideSortOption, text: String) {
+            Button(
+                onClick = { onSort(option) },
+                colors = if (selectedOption == option) {
+                    ButtonDefaults.buttonColors()
+                } else {
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            ) {
+                Text(text)
+            }
         }
-        Button(onClick = { onSort(RideSortOption.SHORT_WAIT) }) {
-            Text("Short Wait")
-        }
-        Button(onClick = { onSort(RideSortOption.ALPHABETICAL) }) {
-            Text("A-Z")
-        }
+
+        SortButton(RideSortOption.LONG_WAIT, "Long Wait")
+        SortButton(RideSortOption.SHORT_WAIT, "Short Wait")
+        SortButton(RideSortOption.ALPHABETICAL, "A-Z")
     }
 }
 
