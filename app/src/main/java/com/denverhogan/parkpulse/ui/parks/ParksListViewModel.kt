@@ -3,6 +3,7 @@ package com.denverhogan.parkpulse.ui.parks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.denverhogan.parkpulse.data.ParkRepository
+import com.denverhogan.parkpulse.model.Park
 import com.denverhogan.parkpulse.model.ParkSortOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,9 +42,11 @@ class ParksListViewModel @Inject constructor(
         if (_uiState.value is ParksListViewState.Success) {
             val currentState = _uiState.value as ParksListViewState.Success
             val sortedParks = when (sortOption) {
-                ParkSortOption.FAVORITES -> currentState.parks.sortedWith(compareByDescending { it.isFavorite })
-                ParkSortOption.ALPHABETICAL -> currentState.parks.sortedWith(compareBy { it.name })
-                ParkSortOption.DISTANCE -> currentState.parks.sortedWith(compareBy { it.distance })
+                ParkSortOption.FAVORITES -> currentState.parks.sortedWith(
+                    compareByDescending<Park> { it.isFavorite }
+                        .thenBy { it.distance })
+                ParkSortOption.DISTANCE -> currentState.parks.sortedBy { it.distance }
+                ParkSortOption.ALPHABETICAL -> currentState.parks.sortedBy { it.name }
             }
             _uiState.update {
                 (it as ParksListViewState.Success).copy(
