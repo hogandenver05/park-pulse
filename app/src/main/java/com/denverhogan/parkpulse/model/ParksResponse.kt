@@ -13,5 +13,7 @@ data class Park(
     val continent: String,
     val latitude: String,
     val longitude: String,
-    val timezone: String
+    val timezone: String,
+    val isFavorite: Boolean = false,
+    val distance: Double? = null
 )
