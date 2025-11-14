@@ -10,13 +10,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.denverhogan.parkpulse.model.Ride
+import com.denverhogan.parkpulse.util.formatLastUpdated
 
 @Composable
 fun RidesListScreen(
@@ -24,6 +29,7 @@ fun RidesListScreen(
     viewModel: RidesListViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
+    val uriHandler = LocalUriHandler.current
 
     when (val state = viewState) {
         is RidesListViewState.Loading -> {
@@ -34,18 +40,27 @@ fun RidesListScreen(
 
         is RidesListViewState.Success -> {
             val rides = state.rides
-            if (rides.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No rides available at the moment.")
-                }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(rides) { ride ->
-                        RidesListItem(ride = ride, onClick = { navController.navigate("parks/${viewModel.parkId}/rides/${ride.id}") })
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = "Rides at ${state.parkName}",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                if (rides.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No rides available at the moment.")
+                    }
+                } else {
+                    LazyColumn(
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(rides) { ride ->
+                            val url = "https://queue-times.com/parks/${viewModel.parkId}/rides/${ride.id}"
+                            RidesListItem(ride = ride, onClick = { uriHandler.openUri(url) })
+                        }
                     }
                 }
             }
@@ -69,8 +84,11 @@ fun RidesListItem(ride: Ride, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(4.dp),
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = getWaitTimeColor(
+            isOpen = ride.isOpen,
+            waitTime = ride.waitTime
+        ))
     ) {
         Column(
             modifier = Modifier
@@ -83,6 +101,62 @@ fun RidesListItem(ride: Ride, onClick: () -> Unit) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "Wait Time: ${if (ride.isOpen) "${ride.waitTime} minutes" else "Closed"}")
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "Last Updated: ${formatLastUpdated(ride.lastUpdated)}")
         }
     }
+}
+
+private fun getWaitTimeColor(isOpen: Boolean, waitTime: Int): Color {
+    if (!isOpen) {
+        return Color(0xFFBDBDBD) // Grey for closed rides
+    }
+
+    // Define start and end colors for the gradient
+    val green = Color(0xFFA5D6A7) // Less washed-out green
+    val yellow = Color(0xFFFFF59D) // Less washed-out yellow
+    val red = Color(0xFFEF9A9A)   // Less washed-out red
+
+    // Define the range of wait times for the gradient
+    val maxWaitTime = 120f // Cap wait time at 120 minutes for color calculation
+
+    // Calculate the interpolation factor (0.0 to 1.0)
+    val fraction = (waitTime / maxWaitTime).coerceIn(0f, 1f)
+
+    return when {
+        fraction < 0.5f -> lerp(green, yellow, fraction * 2)
+        else -> lerp(yellow, red, (fraction - 0.5f) * 2)
+    }
+}
+
+@Preview
+@Composable
+fun RidesListItemPreviewOpen() {
+    RidesListItem(
+        ride = Ride(
+            id = 1,
+            name = "Space Mountain",
+            isOpen = true,
+            waitTime = 135,
+            lastUpdated = "2025-10-27T10:00:00Z"
+        ),
+        onClick = {}
+    )
+}
+
+@Preview
+@Composable
+fun RidesListItemPreviewClosed() {
+    RidesListItem(
+        ride = Ride(
+            id = 2,
+            name = "Haunted Mansion",
+            isOpen = false,
+            waitTime = 0,
+            lastUpdated = "2035-11-14T10:05:00Z"
+        ),
+        onClick = {}
+    )
 }

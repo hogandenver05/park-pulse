@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.denverhogan.parkpulse.model.Park
+import java.net.URLEncoder
 
 @Composable
 fun ParksListScreen(
@@ -47,7 +48,11 @@ fun ParksListScreen(
                     items(parks) { park ->
                         ParksListItem(
                             park = park,
-                            onClick = { navController.navigate("rides/${park.id}") })
+                            onClick = { 
+                                val encodedParkName = URLEncoder.encode(park.name, "UTF-8")
+                                navController.navigate("parks/${park.id}/rides/$encodedParkName")
+                            }
+                        )
                     }
                 }
             }
