@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.denverhogan.parkpulse.ui.parks.ParksListScreen
-import com.denverhogan.parkpulse.ui.rides.RideDetailsScreen
 import com.denverhogan.parkpulse.ui.rides.RidesListScreen
 
 @Composable
@@ -27,11 +26,8 @@ fun AppNavigation() {
             composable("parks") {
                 ParksListScreen(navController = navController)
             }
-            composable("rides/{parkId}") {
-                RidesListScreen(navController = navController)
-            }
-            composable("parks/{parkId}/rides/{rideId}") {
-                RideDetailsScreen()
+            composable("parks/{parkId}/rides/{parkName}") {
+                RidesListScreen()
             }
         }
     }
