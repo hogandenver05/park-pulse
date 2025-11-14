@@ -1,4 +1,4 @@
-package com.denverhogan.parkpulse.list
+package com.denverhogan.parkpulse.ui.parks
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,25 +12,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.denverhogan.parkpulse.model.Park
-import com.denverhogan.parkpulse.ui.theme.ParkPulseTheme
-import com.denverhogan.parkpulse.model.ParksListViewState
 
 @Composable
 fun ParksListScreen(
-    modifier: Modifier = Modifier,
-    onParkClick: (Park) -> Unit,
+    navController: NavController,
     viewModel: ParksListViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
     when (val state = viewState) {
         is ParksListViewState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
@@ -38,24 +35,26 @@ fun ParksListScreen(
         is ParksListViewState.Success -> {
             val parks = state.parks
             if (parks.isEmpty()) {
-                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("No parks available at the moment.")
                 }
             } else {
                 LazyColumn(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(parks) { park ->
-                        ParksListItem(park = park, onClick = { onParkClick(park) })
+                        ParksListItem(
+                            park = park,
+                            onClick = { navController.navigate("rides/${park.id}") })
                     }
                 }
             }
         }
 
         is ParksListViewState.Error -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = state.errorMessage,
                     color = MaterialTheme.colorScheme.error,
@@ -87,13 +86,5 @@ fun ParksListItem(park: Park, onClick: () -> Unit) {
                 overflow = TextOverflow.Ellipsis
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ParksListScreenPreview() {
-    ParkPulseTheme {
-        ParksListScreen(onParkClick = { })
     }
 }
