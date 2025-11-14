@@ -14,6 +14,9 @@ retrofit = "2.9.0"
 hiltAndroid = "2.57.1"
 devtoolsKsp = "2.0.21-1.0.26"
 hiltCompose = "1.3.0"
+room = "2.5.2"
+playServicesLocation = "21.0.1"
+coroutinesPlayServices = "1.8.0"
 
 
 [libraries]
@@ -38,6 +41,11 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltCompose" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
 
 
 [plugins]
