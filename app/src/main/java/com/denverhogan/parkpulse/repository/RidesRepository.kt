@@ -12,9 +12,4 @@ class RidesRepository @Inject constructor(private val api: QueueTimesApi) {
         }
         return emptyList()
     }
-
-    suspend fun getRide(parkId: Int, rideId: Int): Ride? {
-        val rides = getRides(parkId)
-        return rides.find { it.id == rideId }
-    }
 }
