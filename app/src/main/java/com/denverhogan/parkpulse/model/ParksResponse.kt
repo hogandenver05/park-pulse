@@ -1,11 +1,5 @@
 package com.denverhogan.parkpulse.model
 
-import java.util.TimeZone
-
-data class ParksResponse(
-    val parentCompanies: List<ParentCompany>
-)
-
 data class ParentCompany(
     val id: Int,
     val name: String,
@@ -19,5 +13,5 @@ data class Park(
     val continent: String,
     val latitude: String,
     val longitude: String,
-    val timeZone: TimeZone
+    val timezone: String
 )
