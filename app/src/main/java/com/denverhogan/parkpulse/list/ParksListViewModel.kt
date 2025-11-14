@@ -22,8 +22,7 @@ class ParksListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _viewState.update {
-                val result = repository.getAllParks()
-                when (result) {
+                when (val result = repository.getAllParks()) {
                     is GetAllParksResult.Success -> ParksListViewState.Success(parks = result.parks)
                     is GetAllParksResult.Error -> ParksListViewState.Error(errorMessage = result.message)
                 }

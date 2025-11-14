@@ -22,8 +22,7 @@ class RidesListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _viewState.update {
-                val result = repository.getAllRides(id = 60)
-                when (result) {
+                when (val result = repository.getAllRides(id = 60)) {
                     is GetAllRidesResult.Success -> RidesListViewState.Success(rides = result.rides)
                     is GetAllRidesResult.Error -> RidesListViewState.Error(errorMessage = result.message)
                 }
