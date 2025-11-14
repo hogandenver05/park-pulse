@@ -1,10 +1,24 @@
 package com.denverhogan.parkpulse.ui.rides
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,21 +29,26 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.denverhogan.parkpulse.model.Ride
+import com.denverhogan.parkpulse.model.RideSortOption
+import com.denverhogan.parkpulse.ui.theme.RideClosedGrey
+import com.denverhogan.parkpulse.ui.theme.WaitTimeGreen
+import com.denverhogan.parkpulse.ui.theme.WaitTimeRed
+import com.denverhogan.parkpulse.ui.theme.WaitTimeYellow
 import com.denverhogan.parkpulse.util.formatLastUpdated
 
 @Composable
 fun RidesListScreen(
     viewModel: RidesListViewModel = hiltViewModel()
 ) {
-    val viewState by viewModel.viewState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val uriHandler = LocalUriHandler.current
 
-    when (val state = viewState) {
+    when (val state = uiState) {
         is RidesListViewState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -37,30 +56,18 @@ fun RidesListScreen(
         }
 
         is RidesListViewState.Success -> {
-            val rides = state.rides
             Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                     text = "Rides at ${state.parkName}",
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(16.dp)
                 )
-
-                if (rides.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No rides available at the moment.")
-                    }
-                } else {
-                    LazyColumn(
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(rides) { ride ->
-                            val url = "https://queue-times.com/parks/${viewModel.parkId}/rides/${ride.id}"
-                            RidesListItem(ride = ride, onClick = { uriHandler.openUri(url) })
-                        }
-                    }
-                }
+                SortButtons(onSort = { viewModel.sortRides(it) })
+                RidesList(
+                    rides = state.rides,
+                    parkId = viewModel.parkId,
+                    onRideClick = { url -> uriHandler.openUri(url) }
+                )
             }
         }
 
@@ -77,16 +84,67 @@ fun RidesListScreen(
 }
 
 @Composable
-fun RidesListItem(ride: Ride, onClick: () -> Unit) {
+fun SortButtons(onSort: (RideSortOption) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Text("Sort By:")
+        Button(onClick = { onSort(RideSortOption.LONG_WAIT) }) {
+            Text("Long Wait")
+        }
+        Button(onClick = { onSort(RideSortOption.SHORT_WAIT) }) {
+            Text("Short Wait")
+        }
+        Button(onClick = { onSort(RideSortOption.ALPHABETICAL) }) {
+            Text("A-Z")
+        }
+    }
+}
+
+@Composable
+fun RidesList(
+    rides: List<Ride>,
+    parkId: String,
+    onRideClick: (String) -> Unit
+) {
+    if (rides.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No rides available at the moment.")
+        }
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(rides) { ride ->
+                val url = "https://queue-times.com/parks/$parkId/rides/${ride.id}"
+                RidesListItem(ride = ride, onClick = { onRideClick(url) })
+            }
+        }
+    }
+}
+
+@Composable
+fun RidesListItem(
+    ride: Ride,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor = getWaitTimeColor(
-            isOpen = ride.isOpen,
-            waitTime = ride.waitTime
-        ))
+        colors = CardDefaults.cardColors(
+            containerColor = getWaitTimeColor(
+                isOpen = ride.isOpen,
+                waitTime = ride.waitTime
+            )
+        )
     ) {
         Column(
             modifier = Modifier
@@ -107,20 +165,18 @@ fun RidesListItem(ride: Ride, onClick: () -> Unit) {
     }
 }
 
+@Composable
 private fun getWaitTimeColor(isOpen: Boolean, waitTime: Int): Color {
     if (!isOpen) {
-        return Color(0xFFBDBDBD) // Grey for closed rides
+        return RideClosedGrey
     }
 
-    // Define start and end colors for the gradient
-    val green = Color(0xFFA5D6A7) // Less washed-out green
-    val yellow = Color(0xFFFFF59D) // Less washed-out yellow
-    val red = Color(0xFFEF9A9A)   // Less washed-out red
+    val green = WaitTimeGreen
+    val yellow = WaitTimeYellow
+    val red = WaitTimeRed
 
-    // Define the range of wait times for the gradient
-    val maxWaitTime = 120f // Cap wait time at 120 minutes for color calculation
+    val maxWaitTime = 120f
 
-    // Calculate the interpolation factor (0.0 to 1.0)
     val fraction = (waitTime / maxWaitTime).coerceIn(0f, 1f)
 
     return when {
