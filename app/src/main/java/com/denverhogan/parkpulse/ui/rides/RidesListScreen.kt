@@ -19,13 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.denverhogan.parkpulse.model.Ride
 import com.denverhogan.parkpulse.util.formatLastUpdated
 
 @Composable
 fun RidesListScreen(
-    navController: NavController,
     viewModel: RidesListViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
