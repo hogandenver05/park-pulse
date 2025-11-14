@@ -13,7 +13,7 @@ import retrofit2.create
 @InstallIn(SingletonComponent::class)
 @Suppress("unused")
 object NetworkModule {
-    private const val BASE_URL = "https://queue-times.com/parks/"
+    private const val BASE_URL = "https://queue-times.com/"
 
     @Provides
     fun provideRetrofit(): Retrofit {
