@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class LocationProvider @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
 
     fun lastLocation(): Task<Location>? {

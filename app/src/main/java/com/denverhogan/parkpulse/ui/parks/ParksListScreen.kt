@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,9 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.denverhogan.parkpulse.model.Park
-import com.denverhogan.parkpulse.model.ParksListViewState
-import com.denverhogan.parkpulse.model.SortOption
+import com.denverhogan.parkpulse.model.ParkSortOption
 import java.net.URLEncoder
+
+private const val KM_TO_MILES = 0.621371
 
 @Composable
 fun ParksListScreen(
@@ -48,8 +50,14 @@ fun ParksListScreen(
                 CircularProgressIndicator()
             }
         }
+
         is ParksListViewState.Success -> {
             Column(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = "Park Pulse",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(16.dp)
+                )
                 SortButtons(onSort = { viewModel.sortParks(it) })
                 ParksList(
                     parks = state.parks,
@@ -61,29 +69,35 @@ fun ParksListScreen(
                 )
             }
         }
+
         is ParksListViewState.Error -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = state.errorMessage)
+                Text(text = state.errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }
 }
 
 @Composable
-fun SortButtons(onSort: (SortOption) -> Unit) {
+fun SortButtons(onSort: (ParkSortOption) -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text("Sort By:")
-        Button(onClick = { onSort(SortOption.DEFAULT) }) {
-            Text("Default")
+        Button(onClick = { onSort(ParkSortOption.FAVORITES) }) {
+            Text("Favorites")
         }
-        Button(onClick = { onSort(SortOption.DISTANCE) }) {
+        Button(onClick = { onSort(ParkSortOption.DISTANCE) }) {
             Text("Distance")
         }
-        Button(onClick = { onSort(SortOption.ALPHABETICAL) }) {
+        Button(onClick = { onSort(ParkSortOption.ALPHABETICAL) }) {
             Text("A-Z")
         }
     }
@@ -95,35 +109,46 @@ fun ParksList(
     onFavorite: (Int) -> Unit,
     onParkClick: (park: Park) -> Unit
 ) {
-    LazyColumn {
-        items(parks) { park ->
-            ParkCard(
-                park = park,
-                onFavorite = { onFavorite(park.id) },
-                onParkClick = { onParkClick(park) }
-            )
+    if (parks.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No rides available at the moment.")
+        }
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(parks) { park ->
+                ParksListItem(
+                    park = park,
+                    onFavorite = { onFavorite(park.id) },
+                    onClick = { onParkClick(park) }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun ParkCard(
+fun ParksListItem(
     park: Park,
     onFavorite: () -> Unit,
-    onParkClick: () -> Unit
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable(onClick = onParkClick)
+            .clickable(onClick = onClick),
+        shape = MaterialTheme.shapes.medium
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = park.name, style = MaterialTheme.typography.headlineSmall)
                 Text(text = park.country)
                 park.distance?.let {
-                    Text(text = "%.2f miles away".format(it * 0.621371))
+                    Text(text = "%.2f miles away".format(it * KM_TO_MILES))
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))

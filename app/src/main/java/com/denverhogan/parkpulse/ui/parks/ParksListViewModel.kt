@@ -3,9 +3,7 @@ package com.denverhogan.parkpulse.ui.parks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.denverhogan.parkpulse.data.ParkRepository
-import com.denverhogan.parkpulse.model.Park
-import com.denverhogan.parkpulse.model.ParksListViewState
-import com.denverhogan.parkpulse.model.SortOption
+import com.denverhogan.parkpulse.model.ParkSortOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,21 +29,21 @@ class ParksListViewModel @Inject constructor(
             _uiState.value = ParksListViewState.Loading
             try {
                 val parks = parkRepository.getParks()
-                _uiState.value = ParksListViewState.Success(parks = parks)
-                sortParks(SortOption.DEFAULT)
+                _uiState.value = ParksListViewState.Success(parks)
+                sortParks(ParkSortOption.FAVORITES)
             } catch (e: Exception) {
                 _uiState.value = ParksListViewState.Error(e.message ?: "An unknown error occurred")
             }
         }
     }
 
-    fun sortParks(sortOption: SortOption) {
+    fun sortParks(sortOption: ParkSortOption) {
         if (_uiState.value is ParksListViewState.Success) {
             val currentState = _uiState.value as ParksListViewState.Success
             val sortedParks = when (sortOption) {
-                SortOption.DEFAULT -> currentState.parks.sortedWith(compareByDescending<Park> { it.isFavorite })
-                SortOption.ALPHABETICAL -> currentState.parks.sortedWith(compareBy<Park> { it.name }.thenByDescending { it.isFavorite })
-                SortOption.DISTANCE -> currentState.parks.sortedWith(compareBy<Park> { it.distance }.thenByDescending { it.isFavorite })
+                ParkSortOption.FAVORITES -> currentState.parks.sortedWith(compareByDescending { it.isFavorite })
+                ParkSortOption.ALPHABETICAL -> currentState.parks.sortedWith(compareBy { it.name })
+                ParkSortOption.DISTANCE -> currentState.parks.sortedWith(compareBy { it.distance })
             }
             _uiState.update {
                 (it as ParksListViewState.Success).copy(
