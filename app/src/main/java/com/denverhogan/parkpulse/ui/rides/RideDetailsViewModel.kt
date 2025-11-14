@@ -31,7 +31,7 @@ class RideDetailsViewModel @Inject constructor(
                 } else {
                     _viewState.value = RideDetailsViewState.Error("Ride not found")
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _viewState.value = RideDetailsViewState.Error("Failed to load ride details")
             }
         }

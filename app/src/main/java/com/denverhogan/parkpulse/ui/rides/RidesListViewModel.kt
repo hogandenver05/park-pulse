@@ -25,7 +25,7 @@ class RidesListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _viewState.value = RidesListViewState.Success(ridesRepository.getRides(parkId.toInt()))
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _viewState.value = RidesListViewState.Error("Failed to load rides")
             }
         }
