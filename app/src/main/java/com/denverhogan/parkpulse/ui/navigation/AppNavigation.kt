@@ -26,7 +26,7 @@ fun AppNavigation() {
             composable("parks") {
                 ParksListScreen(navController = navController)
             }
-            composable("parks/{parkId}/rides/{parkName}") { backStackEntry ->
+            composable("parks/{parkId}/rides/{parkName}") {
                 RidesListScreen()
             }
         }

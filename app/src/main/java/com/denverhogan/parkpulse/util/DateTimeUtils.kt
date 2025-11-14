@@ -1,11 +1,8 @@
 package com.denverhogan.parkpulse.util
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun formatLastUpdated(lastUpdated: String): String {
     return try {
         val updatedTime = OffsetDateTime.parse(lastUpdated)
