@@ -74,4 +74,15 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    // Location
+    implementation(libs.play.services.location)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
 }
