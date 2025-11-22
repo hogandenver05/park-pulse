@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.denverhogan.parkpulse.ui.parks.ParksListScreen
 import com.denverhogan.parkpulse.ui.rides.RidesListScreen
 
@@ -26,7 +28,13 @@ fun AppNavigation() {
             composable("parks") {
                 ParksListScreen(navController = navController)
             }
-            composable("parks/{parkId}/rides/{parkName}") {
+            composable(
+                route = "parks/{parkId}/rides/{parkName}",
+                arguments = listOf(
+                    navArgument("parkId") { type = NavType.IntType },
+                    navArgument("parkName") { type = NavType.StringType }
+                )
+            ) {
                 RidesListScreen()
             }
         }

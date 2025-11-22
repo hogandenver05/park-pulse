@@ -13,11 +13,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,18 +62,31 @@ fun RidesListScreen(
 
         is RidesListViewState.Success -> {
             Column(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = "Rides at ${state.parkName}",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Rides at ${state.parkName}",
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = { viewModel.refreshRides() }) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Refresh"
+                        )
+                    }
+                }
                 SortButtons(
                     selectedOption = state.sortOption,
                     onSort = { viewModel.sortRides(it) }
                 )
                 RidesList(
                     rides = state.rides,
-                    parkId = viewModel.parkId,
+                    parkId = viewModel.parkId.toString(),
                     onRideClick = { url -> uriHandler.openUri(url) }
                 )
             }
@@ -99,7 +116,10 @@ fun SortButtons(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Text("Sort By:")
+        Text(
+            text = "Sort By:",
+            color = MaterialTheme.colorScheme.onSurface
+        )
 
         @Composable
         fun SortButton(option: RideSortOption, text: String) {
@@ -132,7 +152,10 @@ fun RidesList(
 ) {
     if (rides.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No rides available at the moment.")
+            Text(
+                text = "No rides available at the moment.",
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     } else {
         LazyColumn(
@@ -174,12 +197,34 @@ fun RidesListItem(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = getTextColorForBackground(
+                    getWaitTimeColor(
+                        isOpen = ride.isOpen,
+                        waitTime = ride.waitTime
+                    )
+                )
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Wait Time: ${if (ride.isOpen) "${ride.waitTime} minutes" else "Closed"}")
+            Text(
+                text = "Wait Time: ${if (ride.isOpen) "${ride.waitTime} minutes" else "Closed"}",
+                color = getTextColorForBackground(
+                    getWaitTimeColor(
+                        isOpen = ride.isOpen,
+                        waitTime = ride.waitTime
+                    )
+                )
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Last Updated: ${formatLastUpdated(ride.lastUpdated)}")
+            Text(
+                text = "Last Updated: ${formatLastUpdated(ride.lastUpdated)}",
+                color = getTextColorForBackground(
+                    getWaitTimeColor(
+                        isOpen = ride.isOpen,
+                        waitTime = ride.waitTime
+                    )
+                )
+            )
         }
     }
 }
@@ -201,6 +246,19 @@ private fun getWaitTimeColor(isOpen: Boolean, waitTime: Int): Color {
     return when {
         fraction < 0.5f -> lerp(green, yellow, fraction * 2)
         else -> lerp(yellow, red, (fraction - 0.5f) * 2)
+    }
+}
+
+@Composable
+private fun getTextColorForBackground(backgroundColor: Color): Color {
+    // Calculate luminance to determine if background is light or dark
+    val luminance = (0.299 * backgroundColor.red + 0.587 * backgroundColor.green + 0.114 * backgroundColor.blue).toFloat()
+    
+    // Use dark text on light backgrounds, light text on dark backgrounds
+    return if (luminance > 0.5f) {
+        Color.Black
+    } else {
+        Color.White
     }
 }
 

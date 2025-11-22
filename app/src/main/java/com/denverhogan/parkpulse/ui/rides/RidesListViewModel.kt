@@ -23,13 +23,29 @@ class RidesListViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<RidesListViewState>(RidesListViewState.Loading)
     val uiState: StateFlow<RidesListViewState> = _uiState.asStateFlow()
 
-    val parkId: String = savedStateHandle.get<String>("parkId")!!
+    val parkId: Int = savedStateHandle.get<Int>("parkId")!!
     private val parkName: String = URLDecoder.decode(savedStateHandle.get<String>("parkName")!!, "UTF-8")
 
     init {
         viewModelScope.launch {
             try {
-                val rides = ridesRepository.getRides(parkId.toInt())
+                val rides = ridesRepository.getRides(parkId)
+                _uiState.value = RidesListViewState.Success(
+                    parkName = parkName,
+                    rides = rides
+                )
+                sortRides(RideSortOption.LONG_WAIT)
+            } catch (_: Exception) {
+                _uiState.value = RidesListViewState.Error("Failed to load rides")
+            }
+        }
+    }
+
+    fun refreshRides() {
+        viewModelScope.launch {
+            _uiState.value = RidesListViewState.Loading
+            try {
+                val rides = ridesRepository.getRides(parkId)
                 _uiState.value = RidesListViewState.Success(
                     parkName = parkName,
                     rides = rides

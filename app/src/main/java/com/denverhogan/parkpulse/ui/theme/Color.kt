@@ -2,14 +2,23 @@ package com.denverhogan.parkpulse.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Light theme colors
+val VibrantRed = Color(0xFFE53935)      // Deep vibrant red
+val DeepOrange = Color(0xFFFF6F00)      // Deep orange
+val BrightOrange = Color(0xFFFF9800)    // Bright orange
+val LightOrange = Color(0xFFFFB74D)     // Light orange for accents
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Dark theme colors
+val VibrantRedLight = Color(0xFFFF5252)  // Lighter red for dark theme
+val DeepOrangeLight = Color(0xFFFF8A50)  // Lighter orange for dark theme
+val BrightOrangeLight = Color(0xFFFFB74D) // Lighter bright orange
+val LightOrangeLight = Color(0xFFFFCC80)  // Very light orange
 
+// Neutral colors
+val DarkRed = Color(0xFFC62828)         // Darker red for depth
+val DarkOrange = Color(0xFFE65100)       // Darker orange for depth
+
+// Wait time colors
 val WaitTimeGreen = Color(0xFFA5D6A7)
 val WaitTimeYellow = Color(0xFFFFF59D)
 val WaitTimeRed = Color(0xFFEF9A9A)
