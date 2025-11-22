@@ -57,6 +57,10 @@ class ParksListViewModel @Inject constructor(
         }
     }
 
+    fun refreshParks() {
+        getParks()
+    }
+
     fun toggleFavorite(parkId: Int) {
         viewModelScope.launch {
             if (_uiState.value is ParksListViewState.Success) {

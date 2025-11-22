@@ -1,5 +1,6 @@
 package com.denverhogan.parkpulse.ui.parks
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,13 +10,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -29,11 +33,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.denverhogan.parkpulse.R
 import com.denverhogan.parkpulse.model.Park
 import com.denverhogan.parkpulse.model.ParkSortOption
+import com.denverhogan.parkpulse.ui.theme.VibrantRed
 import java.net.URLEncoder
 
 private const val KM_TO_MILES = 0.621371
@@ -44,21 +52,66 @@ fun ParksListScreen(
     viewModel: ParksListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val uriHandler = LocalUriHandler.current
 
     when (val state = uiState) {
         is ParksListViewState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Park Pulse Logo",
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(200.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CircularProgressIndicator()
+                }
             }
         }
 
         is ParksListViewState.Success -> {
             Column(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = "Park Pulse",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { uriHandler.openUri("https://github.com/hogandenver05/park-pulse/blob/main/README.md") },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.graphic),
+                            contentDescription = "Park Pulse - Tap to view GitHub repository",
+                            modifier = Modifier
+                                .height(32.dp),
+                            contentScale = ContentScale.FillHeight
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.text),
+                            contentDescription = "Park Pulse - Tap to view GitHub repository",
+                            modifier = Modifier
+                                .height(32.dp),
+                            contentScale = ContentScale.FillHeight
+                        )
+                    }
+                    IconButton(onClick = { viewModel.refreshParks() }) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Refresh"
+                        )
+                    }
+                }
                 SortButtons(
                     selectedOption = state.sortOption,
                     onSort = { viewModel.sortParks(it) }
@@ -174,7 +227,8 @@ fun ParksListItem(
             IconButton(onClick = onFavorite) {
                 Icon(
                     imageVector = if (park.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite"
+                    contentDescription = "Favorite",
+                    tint = if (park.isFavorite) VibrantRed else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.denverhogan.parkpulse.data
 
 import android.location.Location
+import com.denverhogan.parkpulse.data.local.FavoritePark
 import com.denverhogan.parkpulse.data.local.FavoriteParkDao
 import com.denverhogan.parkpulse.location.LocationProvider
 import com.denverhogan.parkpulse.model.Park
@@ -23,12 +24,16 @@ class ParkRepository @Inject constructor(
 
         return parks.map {
             val distance = if (location != null) {
-                val parkLocation = Location("").apply {
-                    latitude = it.latitude.toDouble()
-                    longitude = it.longitude.toDouble()
+                try {
+                    val parkLocation = Location("").apply {
+                        latitude = it.latitude.toDouble()
+                        longitude = it.longitude.toDouble()
+                    }
+                    // Convert to Double after calculation
+                    location.distanceTo(parkLocation).toDouble() / 1000
+                } catch (_: NumberFormatException) {
+                    null
                 }
-                // Convert to Double after calculation
-                location.distanceTo(parkLocation).toDouble() / 1000
             } else {
                 null
             }
@@ -45,7 +50,7 @@ class ParkRepository @Inject constructor(
     }
 
     suspend fun addFavorite(parkId: Int) {
-        favoriteParkDao.addFavorite(com.denverhogan.parkpulse.data.local.FavoritePark(parkId))
+        favoriteParkDao.addFavorite(FavoritePark(parkId))
     }
 
     suspend fun removeFavorite(parkId: Int) {
