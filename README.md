@@ -1,4 +1,7 @@
-# 🎢 Park Pulse
+<div align="center">
+  <img width="120" height="100" alt="Park Pulse Logo" src="https://github.com/user-attachments/assets/3aa05269-c2b7-4464-9e54-c68530467907" />
+  <img width="385" height="97" src="https://github.com/user-attachments/assets/5282753c-87ef-408e-8b6a-b53f866b1c6a" />
+</div>
 
 **Park Pulse** is a modern Android application built in Kotlin that displays a list of amusement park rides and their current wait times. It utilizes Jetpack Compose for UI, clean architecture principles, Hilt for dependency injection, Retrofit for networking, and state-driven UI updates via `ViewModel` and `StateFlow`.
 
@@ -37,11 +40,11 @@
 
 - Android Studio Hedgehog or later
 - Android SDK 36
-- Kotlin 1.9+
-- Minimum SDK: 24
+- Kotlin 2.0+
+- Minimum SDK: 26
 
 ### Clone the repository
 
 ```bash
 git clone https://github.com/hogandenver05/park-pulse.git
-cd theme-parks
+cd park-pulse
